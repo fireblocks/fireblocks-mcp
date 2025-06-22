@@ -1,0 +1,82 @@
+{
+  "name": "fireblocks-mcp",
+  "version": "1.0.0",
+  "description": "A Model Context Protocol (MCP) server implementation for Fireblocks API",
+  "type": "module",
+  "bin": {
+    "mcp-server-fireblocks": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsx --watch --env-file=.env --inspect src/index.ts",
+    "build": "rm -rf dist && tsc",
+    "inspector": "npx @modelcontextprotocol/inspector node ./dist/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --coverage --ci --watchAll=false",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.{ts,js,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json,md}\"",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist coverage",
+    "prepare": "husky",
+    "commit": "git-cz",
+    "semantic-release": "semantic-release",
+    "precommit": "npm run lint && npm run format:check && npm run type-check && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/fireblocks/shell/infra/ai/mcp-servers/fireblocks-mcp.git"
+  },
+  "keywords": [
+    "MCP",
+    "Fireblocks"
+  ],
+  "author": "Fireblocks",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://gitlab.com/fireblocks/shell/infra/ai/mcp-servers/fireblocks-mcp/issues"
+  },
+  "homepage": "https://gitlab.com/fireblocks/shell/infra/ai/mcp-servers/fireblocks-mcp#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.13.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.15.32",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-jest": "^29.0.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.5.0",
+    "husky": "^9.1.7",
+    "jest": "^30.0.2",
+    "prettier": "^3.5.3",
+    "semantic-release": "^24.2.5",
+    "ts-jest": "^29.4.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
