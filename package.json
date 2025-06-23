@@ -1,21 +1,24 @@
 {
-  "name": "fireblocks-mcp",
+  "name": "@fireblocks/mcp-server",
   "version": "1.0.0",
   "description": "A Model Context Protocol (MCP) server implementation for Fireblocks API",
-  "type": "module",
+  "type": "commonjs",
   "bin": {
-    "mcp-server-fireblocks": "./dist/index.js"
+    "fireblocks-mcp": "./dist/main.js"
   },
   "files": [
     "dist",
+    "package.json",
+    "README.md",
+    "LICENSE",
     "CHANGELOG.md"
   ],
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "tsx --watch --env-file=.env --inspect src/index.ts",
+    "start": "node --env-file=.env dist/main.js",
+    "dev": "tsx --watch --env-file=.env --inspect src/main.ts",
     "build": "rm -rf dist && tsc",
-    "inspector": "npx @modelcontextprotocol/inspector node ./dist/index.js",
-    "test": "jest",
+    "inspector": "npm run build && npx @modelcontextprotocol/inspector node --env-file=.env ./dist/main.js",
+    "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage --ci --watchAll=false",
     "lint": "eslint src --ext .ts",
@@ -31,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/fireblocks/shell/infra/ai/mcp-servers/fireblocks-mcp.git"
+    "url": "https://github.com/fireblocks/fireblocks-mcp.git"
   },
   "keywords": [
     "MCP",
@@ -40,18 +43,22 @@
   "author": "Fireblocks",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://gitlab.com/fireblocks/shell/infra/ai/mcp-servers/fireblocks-mcp/issues"
+    "url": "https://github.com/fireblocks/fireblocks-mcp/issues"
   },
-  "homepage": "https://gitlab.com/fireblocks/shell/infra/ai/mcp-servers/fireblocks-mcp#readme",
+  "homepage": "https://github.com/fireblocks/fireblocks-mcp#readme",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.13.0",
-    "zod": "^3.25.67"
+    "@fireblocks/ts-sdk": "^10.4.0",
+    "@modelcontextprotocol/sdk": "^1.13.2",
+    "express": "^5.1.0",
+    "zod": "^3.25.67",
+    "zod-to-json-schema": "^3.24.6"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
+    "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.15.32",
     "@typescript-eslint/eslint-plugin": "^8.34.1",

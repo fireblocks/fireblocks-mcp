@@ -1,0 +1,16 @@
+# .dockerignore
+node_modules
+npm-debug.log
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+coverage
+.nyc_output
+.vscode
+.github
+.husky
+tmp
+.gitlab-ci.yml
+*.md

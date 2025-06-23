@@ -5,12 +5,14 @@ Thank you for your interest in contributing to the Fireblocks MCP Server! This d
 ## Development Setup
 
 1. **Clone the repository**
+
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/fireblocks/fireblocks-mcp.git
    cd fireblocks-mcp
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -26,16 +28,19 @@ Thank you for your interest in contributing to the Fireblocks MCP Server! This d
 ### Making Changes
 
 1. **Create a feature branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
 2. **Make your changes**
+
    - Follow the existing code style
    - Write tests for new functionality
    - Update documentation as needed
 
 3. **Run quality checks**
+
    ```bash
    npm run precommit
    ```
@@ -122,6 +127,7 @@ This project uses several tools to maintain code quality:
 - **Husky**: For git hooks
 
 Quality checks run automatically:
+
 - **Pre-commit**: Runs linting, formatting, type checking, and tests
 - **Commit-msg**: Validates commit message format
 
@@ -151,6 +157,7 @@ This project uses [Semantic Release](https://semantic-release.gitbook.io/) for a
 ### How Releases Work
 
 1. **Automatic Versioning**: Based on conventional commit messages
+
    - `fix:` → patch release (1.0.0 → 1.0.1)
    - `feat:` → minor release (1.0.0 → 1.1.0)
    - `BREAKING CHANGE:` → major release (1.0.0 → 2.0.0)
@@ -182,6 +189,7 @@ npm run semantic-release
 4. **Push to your fork** and create a pull request
 
 5. **Ensure all checks pass**:
+
    - All tests pass
    - Code quality checks pass
    - Conventional commit format is used

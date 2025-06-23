@@ -1,20 +1,26 @@
-import js from '@eslint/js';
-import typescript from '@typescript-eslint/eslint-plugin';
-import typescriptParser from '@typescript-eslint/parser';
-import jest from 'eslint-plugin-jest';
-import prettier from 'eslint-plugin-prettier';
+const js = require('@eslint/js');
+const typescript = require('@typescript-eslint/eslint-plugin');
+const typescriptParser = require('@typescript-eslint/parser');
+const jest = require('eslint-plugin-jest');
+const prettier = require('eslint-plugin-prettier');
 
-export default [
+module.exports = [
   js.configs.recommended,
   {
     files: ['**/*.ts'],
-    ignores: ['**/*.test.ts', '**/*.spec.ts', '**/__tests__/**/*.ts'],
+    ignores: ['**/*.test.ts', '**/*.spec.ts', '**/tests/**/*.ts'],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
         ecmaVersion: 2022,
         sourceType: 'module',
         project: './tsconfig.json',
+      },
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
       },
     },
     plugins: {
@@ -23,8 +29,9 @@ export default [
     },
     rules: {
       // Core ESLint rules
-      'no-console': 'warn',
+      'no-console': 'error',
       'no-debugger': 'error',
+      'no-unused-vars': 'off',
       'no-duplicate-imports': 'error',
       'no-unused-expressions': 'error',
       'prefer-const': 'error',
@@ -45,7 +52,7 @@ export default [
     },
   },
   {
-    files: ['**/*.test.ts', '**/*.spec.ts', '**/__tests__/**/*.ts'],
+    files: ['**/*.test.ts', '**/*.spec.ts', '**/tests/**/*.ts'],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
@@ -64,6 +71,7 @@ export default [
     rules: {
       // Core ESLint rules
       'prefer-const': 'error',
+      'no-unused-vars': 'off',
       'no-var': 'error',
       'object-shorthand': 'error',
       'prefer-template': 'error',
