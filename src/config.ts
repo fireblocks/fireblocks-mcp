@@ -47,7 +47,11 @@ function createFireblocksConfig(): FireblocksConfig {
   }
 
   const secretKey = getSecretKey();
-  const basePath = process.env.FIREBLOCKS_API_BASE_URL || 'https://api.fireblocks.io/v2';
+  const basePath = process.env.FIREBLOCKS_API_BASE_URL;
+
+  if (!basePath) {
+    throw new Error('FIREBLOCKS_API_BASE_URL environment variable is required');
+  }
 
   return {
     apiKey,

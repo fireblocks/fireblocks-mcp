@@ -27,6 +27,18 @@ export class FireblocksClient {
     this._fireblocks = new Fireblocks(config.fireblocks);
   }
 
+  async testConnection() {
+    try {
+      await this.getVaultAccounts({
+        limit: 1,
+      });
+    } catch (error: any) {
+      const { data, statusCode } = error.response || {};
+
+      throw new Error(`Failed to connect to Fireblocks API: ${statusCode} ${data?.message || ''}`);
+    }
+  }
+
   async getTransactions(req: GetTransactionsRequest): Promise<GetTransactionsResponse> {
     const transactions = await this._fireblocks.transactions.getTransactions(req);
     return transactions.data;

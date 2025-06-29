@@ -62,7 +62,7 @@ The Fireblocks MCP server can be integrated with various MCP-compatible clients.
         "FIREBLOCKS_PRIVATE_KEY_PATH=/keys/private-key.pem",
         "-v",
         "/path/to/your/private-key.pem:/keys/private-key.pem:ro",
-        "fireblocks/mcp-server"
+        "fireblocksofficial/mcp-server"
       ]
     }
   }
@@ -76,7 +76,7 @@ docker run --rm -i \
   --env FIREBLOCKS_API_KEY=your-api-key \
   --env FIREBLOCKS_PRIVATE_KEY_PATH=/keys/private-key.pem \
   -v /path/to/your/private-key.pem:/keys/private-key.pem:ro \
-  fireblocks/mcp-server
+  fireblocksofficial/mcp-server
 ```
 
 Or use an environment file:
@@ -85,7 +85,7 @@ Or use an environment file:
 docker run --rm -i \
   --env-file .env \
   -v /path/to/your/private-key.pem:/keys/private-key.pem:ro \
-  @fireblocks/mcp-server
+  fireblocksofficial/mcp-server
 ```
 
 #### For local global installation:
@@ -114,8 +114,8 @@ FIREBLOCKS_PRIVATE_KEY_PATH=/path/to/your/private-key.pem
 # Method 2: Private key content directly (escape newlines as \n)
 FIREBLOCKS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nXYZ..."
 
-# Optional: API Base URL (defaults to https://api.fireblocks.io/v2)
-FIREBLOCKS_API_BASE_URL=https://api.fireblocks.io/v2
+# API Base URL
+FIREBLOCKS_API_BASE_URL=https://api.fireblocks.io/v1
 ```
 
 ### Private Key Setup

@@ -5,6 +5,7 @@ import {
   ListToolsRequestSchema,
   TextContent,
 } from '@modelcontextprotocol/sdk/types.js';
+import { fireblocksClient } from '../fireblocks-client';
 import { Tool } from '../types';
 import { convertZodToJsonSchema, logger } from '../utils';
 import { errorHandling } from './error-handlling';
@@ -118,6 +119,9 @@ export class Server {
         const stdioHandler = new StdioTransportHandler(this.server, this.name);
         await stdioHandler.start();
       }
+
+      // Test the connection to Fireblocks API
+      await fireblocksClient.testConnection();
     } catch (error) {
       logger.error(`Unexpected error starting ${this.name}`, error);
       process.exit(1);

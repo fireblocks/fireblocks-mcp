@@ -186,7 +186,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  docker:
+  publish-docker-image:
     needs: release
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -203,14 +203,14 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: fireblocks/mcp-server
+          images: fireblocksofficial/mcp-server
           tags: |
             type=ref,event=branch
             type=ref,event=pr
