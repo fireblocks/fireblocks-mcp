@@ -1,5 +1,5 @@
 import { Tool } from '../types';
-import { getBlockchainAssetTool, getBlockchainsTool } from './blockchains';
+import { getAssetsTool, getBlockchainAssetTool, getBlockchainsTool } from './blockchains';
 import { getExchangeAccountsTool } from './exchanges';
 import { getNetworkConnectionsTool } from './network';
 import { getActivePolicyTool } from './policy';
@@ -8,6 +8,7 @@ import {
   getVaultAccountAssetTool,
   getVaultAccountByIdTool,
   getVaultAccountsTool,
+  getVaultAssetsTool,
   getVaultBalanceByAssetTool,
 } from './vaults';
 import { getWhitelistIpAddressTool } from './whitelist';
@@ -18,12 +19,14 @@ const tools: Tool[] = [
   getVaultAccountsTool,
   getVaultAccountByIdTool,
   getVaultAccountAssetTool,
+  getVaultAssetsTool,
   getVaultBalanceByAssetTool,
   getExchangeAccountsTool,
   getNetworkConnectionsTool,
   getActivePolicyTool,
   getBlockchainsTool,
   getBlockchainAssetTool,
+  getAssetsTool,
   getWhitelistIpAddressTool,
 ];
 

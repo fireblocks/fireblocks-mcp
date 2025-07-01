@@ -23,9 +23,12 @@ const schema = z
       .number()
       .int()
       .min(1)
-      .max(500)
+      .max(200)
+      .default(50)
       .optional()
-      .describe('Limits the number of results. Default is 200. The maximum allowed limit is 500'),
+      .describe(
+        'Limits the number of results. If not provided, a limit of 50 will be used. The maximum allowed limit is 200',
+      ),
   })
   .strict();
 

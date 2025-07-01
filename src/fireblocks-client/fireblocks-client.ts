@@ -10,8 +10,12 @@ import {
   VaultsApiGetVaultAccountAssetRequest as GetVaultAccountAssetRequest,
   VaultsApiGetPagedVaultAccountsRequest as GetVaultAccountsRequest,
   VaultAccountsPagedResponse as GetVaultAccountsResponse,
+  VaultsApiGetVaultAssetsRequest as GetVaultAssetsRequest,
+  GetVaultAssetsResponse,
   WhitelistIpAddressesApiGetWhitelistIpAddressesRequest as GetWhitelistIpAddressesRequest,
   GetWhitelistIpAddressesResponse,
+  BlockchainsAssetsApiListAssetsRequest as ListAssetsRequest,
+  ListAssetsResponse,
   ListBlockchainsResponse,
   PolicyAndValidationResponse,
   TransactionRequest,
@@ -77,6 +81,18 @@ export class FireblocksClient {
     return accountBalances.data;
   }
 
+  async getVaultAssets(req: GetVaultAssetsRequest): Promise<GetVaultAssetsResponse> {
+    const vaultAssets = await this._fireblocks.vaults.getVaultAssets(req);
+
+    return vaultAssets.data;
+  }
+
+  async getAssets(req: ListAssetsRequest): Promise<ListAssetsResponse> {
+    const assets = await this._fireblocks.blockchainsAssets.listAssets(req);
+
+    return assets.data;
+  }
+
   async getExchangeAccounts(req: GetExchangeAccountsRequest): Promise<GetExchangeAccountsResponse> {
     const exchangeAccounts = await this._fireblocks.exchangeAccounts.getPagedExchangeAccounts(req);
 
@@ -130,13 +146,15 @@ export type {
   GetVaultAccountAssetRequest,
   GetVaultAccountsRequest,
   GetVaultAccountsResponse,
+  GetVaultAssetsRequest,
+  GetVaultAssetsResponse,
   GetWhitelistIpAddressesRequest,
   GetWhitelistIpAddressesResponse,
+  ListAssetsRequest,
+  ListAssetsResponse,
   ListBlockchainsResponse,
   PolicyAndValidationResponse,
   TransactionRequest,
   VaultAccount,
   VaultAsset,
 };
-
-// list venues (vaults, exchanges, whitelisted addresses - internal and external, and network connections), and querying their balances, querying asset and blockchain information, and policy settings

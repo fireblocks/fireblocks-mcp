@@ -5,6 +5,13 @@ import { Tool } from '../types';
 import { Server } from './server';
 import { SSETransportHandler, StdioTransportHandler } from './transports';
 
+// Mock the fireblocks client to avoid config loading
+jest.mock('../fireblocks-client', () => ({
+  fireblocksClient: {
+    testConnection: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
 // Mock the transports
 jest.mock('./transports', () => ({
   SSETransportHandler: jest.fn().mockImplementation(() => ({

@@ -301,10 +301,8 @@ describe('getTransactionsTool', () => {
   describe('parameter validation', () => {
     it('should validate limit range', () => {
       expect(getTransactionsTool.schema.safeParse({ limit: 1 }).success).toBe(true);
-      expect(getTransactionsTool.schema.safeParse({ limit: 250 }).success).toBe(true);
-      expect(getTransactionsTool.schema.safeParse({ limit: 500 }).success).toBe(true);
+      expect(getTransactionsTool.schema.safeParse({ limit: 250 }).success).toBe(false);
       expect(getTransactionsTool.schema.safeParse({ limit: 0 }).success).toBe(false);
-      expect(getTransactionsTool.schema.safeParse({ limit: 501 }).success).toBe(false);
       expect(getTransactionsTool.schema.safeParse({ limit: -1 }).success).toBe(false);
     });
 

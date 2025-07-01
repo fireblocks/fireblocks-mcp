@@ -142,10 +142,10 @@ Retrieve Fireblocks transactions with comprehensive filtering options.
 - `status` (optional): Filter by transaction status
 - `orderBy` (optional): Order by 'createdAt' or 'lastUpdated'
 - `sort` (optional): Sort direction ('ASC' or 'DESC')
-- `limit` (optional): Number of results (1-500, default: 200)
-- `sourceType` (optional): Source type (VAULT_ACCOUNT, EXCHANGE_ACCOUNT, etc.)
+- `limit` (optional): Number of results (1-200, default: 50)
+- `sourceType` (optional): Source type (VAULT_ACCOUNT, EXCHANGE_ACCOUNT, INTERNAL_WALLET, EXTERNAL_WALLET, CONTRACT, FIAT_ACCOUNT, NETWORK_CONNECTION, COMPOUND, UNKNOWN, GAS_STATION, END_USER_WALLET)
 - `sourceId` (optional): Source ID
-- `destType` (optional): Destination type
+- `destType` (optional): Destination type (VAULT_ACCOUNT, EXCHANGE_ACCOUNT, INTERNAL_WALLET, EXTERNAL_WALLET, CONTRACT, FIAT_ACCOUNT, NETWORK_CONNECTION, COMPOUND, ONE_TIME_ADDRESS, END_USER_WALLET)
 - `destId` (optional): Destination ID
 - `assets` (optional): Comma-separated list of asset IDs
 - `txHash` (optional): Filter by transaction hash
@@ -171,19 +171,41 @@ Retrieve vault accounts with filtering and pagination.
 - `orderBy` (optional): Sort direction ('ASC' or 'DESC')
 - `before` (optional): Pagination cursor for previous results
 - `after` (optional): Pagination cursor for next results
-- `limit` (optional): Number of results (1-500, default: 200)
+- `limit` (optional): Number of results (1-200, default: 50)
 
 #### `get_vault_account_by_id`
 
 Get details of a specific vault account by ID.
 
+**Parameters:**
+
+- `vaultAccountId` (required): The ID of the vault account to retrieve
+
 #### `get_vault_account_asset`
 
 Get asset information for a specific vault account.
 
+**Parameters:**
+
+- `vaultAccountId` (required): The ID of the vault account
+- `assetId` (required): The ID of the asset
+
+#### `get_vault_assets`
+
+Get asset balance for chosen assets with optional filtering.
+
+**Parameters:**
+
+- `accountNamePrefix` (optional): Filter vault accounts by name prefix
+- `accountNameSuffix` (optional): Filter vault accounts by name suffix
+
 #### `get_vault_balance_by_asset`
 
 Get vault balance information for a specific asset.
+
+**Parameters:**
+
+- `assetId` (required): The ID of the asset
 
 ### Exchange Management
 
@@ -216,6 +238,25 @@ Retrieve information about supported blockchains.
 #### `get_blockchain_asset`
 
 Get asset information for a specific blockchain.
+
+**Parameters:**
+
+- `id` (required): The ID or legacyId of the blockchain asset
+
+#### `get_assets`
+
+Get assets supported by Fireblocks with comprehensive filtering options.
+
+**Parameters:**
+
+- `blockchainId` (optional): Blockchain ID of the assets
+- `assetClass` (optional): Assets class (NATIVE, FT, FIAT, NFT, SFT)
+- `symbol` (optional): Assets onchain symbol
+- `scope` (optional): Scope of the assets (GLOBAL, LOCAL)
+- `deprecated` (optional): Are assets deprecated (boolean)
+- `ids` (optional): A list of asset IDs (max 100)
+- `pageCursor` (optional): Next page cursor to fetch
+- `pageSize` (optional): Items per page (100-1000, default: 500)
 
 ### Security
 

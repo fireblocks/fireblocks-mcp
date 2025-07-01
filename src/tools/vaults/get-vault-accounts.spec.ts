@@ -50,7 +50,7 @@ describe('getVaultAccountsTool', () => {
         orderBy: 'ASC' as const,
         before: 'cursor-before-123',
         after: 'cursor-after-456',
-        limit: 250,
+        limit: 200,
       };
 
       const result = getVaultAccountsTool.schema.safeParse(validArgs);
