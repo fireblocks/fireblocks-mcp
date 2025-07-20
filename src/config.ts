@@ -9,6 +9,7 @@ export interface FireblocksConfig {
 
 export interface Config {
   fireblocks: FireblocksConfig;
+  allowWriteOperations: boolean;
 }
 
 /**
@@ -62,4 +63,6 @@ function createFireblocksConfig(): FireblocksConfig {
 
 export const config: Config = {
   fireblocks: createFireblocksConfig(),
+  allowWriteOperations:
+    process.env.ENABLE_WRITE_OPERATIONS === 'true' || process.env.ENABLE_WRITE_OPERATIONS === '1',
 };

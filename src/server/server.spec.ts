@@ -1,3 +1,18 @@
+// Mock the config module before any other imports
+jest.mock('../config', () => ({
+  config: {
+    fireblocks: {
+      apiKey: 'test-api-key',
+      secretKey: 'test-secret-key',
+      baseUrl: 'https://api.fireblocks.io',
+    },
+    server: {
+      port: 3000,
+      corsOrigin: 'http://localhost:3000',
+    },
+  },
+}));
+
 import { Server as MCPServer } from '@modelcontextprotocol/sdk/server/index.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';

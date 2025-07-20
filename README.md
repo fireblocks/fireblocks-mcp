@@ -10,11 +10,13 @@ A Model Context Protocol (MCP) server implementation for the Fireblocks API, ena
 
 This MCP server provides secure access to Fireblocks functionality, allowing AI assistants to:
 
-- Retrieve and manage vault accounts and assets
 - Query and create transactions
+- Retrieve and manage vault accounts and assets
 - Access exchange account information
-- Manage network connections and policies
+- Query network connections and policies
 - Query blockchain information and whitelisted IP addresses
+- Query external and internal wallets
+- Query and filter workspace users
 
 ## Prerequisites
 
@@ -38,7 +40,8 @@ The Fireblocks MCP server can be integrated with various MCP-compatible clients.
       "args": ["-y", "@fireblocks/mcp-server"],
       "env": {
         "FIREBLOCKS_API_KEY": "your-api-key",
-        "FIREBLOCKS_PRIVATE_KEY_PATH": "/path/to/private-key.pem"
+        "FIREBLOCKS_PRIVATE_KEY_PATH": "/path/to/private-key.pem",
+        "ENABLE_WRITE_OPERATIONS": "false"
       }
     }
   }
@@ -99,9 +102,7 @@ fireblocks-mcp
 
 The MCP server requires Fireblocks API credentials to be configured via environment variables.
 
-### Required Environment Variables
-
-Create a `.env` file in your project root or set the following environment variables:
+### Environment Variables
 
 ```bash
 # Required: Fireblocks API Key
@@ -114,9 +115,16 @@ FIREBLOCKS_PRIVATE_KEY_PATH=/path/to/your/private-key.pem
 # Method 2: Private key content directly (escape newlines as \n)
 FIREBLOCKS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nXYZ..."
 
-# API Base URL
+# Required: API Base URL
 FIREBLOCKS_API_BASE_URL=https://api.fireblocks.io/v1
+
+# Optional: Enable write operations such as creating transactions (default: false)
+ENABLE_WRITE_OPERATIONS=true
 ```
+
+**⚠️ Security Warning**: Write operations allow AI assistants to create transactions and modify data in your Fireblocks workspace. Only enable this in trusted environments and ensure proper access controls are in place.
+
+When write operations are disabled, tools like `create_transaction` will not be available to the AI assistant.
 
 ### Private Key Setup
 
@@ -257,6 +265,28 @@ Get assets supported by Fireblocks with comprehensive filtering options.
 - `ids` (optional): A list of asset IDs (max 100)
 - `pageCursor` (optional): Next page cursor to fetch
 - `pageSize` (optional): Items per page (100-1000, default: 500)
+
+### Wallet Management
+
+#### `get_external_wallets`
+
+Retrieve external wallets under the workspace.
+
+#### `get_internal_wallets`
+
+Retrieve internal wallets under the workspace.
+
+### User Management
+
+#### `get_users`
+
+List all users for the workspace with optional filtering (requires Admin permissions).
+
+**Parameters:**
+
+- `id` (optional): Filter users by specific user ID
+- `email` (optional): Filter users by specific email address (case-insensitive)
+- `query` (optional): Search users by name or email (case-insensitive partial matching)
 
 ### Security
 

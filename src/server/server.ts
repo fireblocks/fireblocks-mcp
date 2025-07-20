@@ -7,6 +7,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { fireblocksClient } from '../fireblocks-client';
 import { Tool } from '../types';
+import { config } from '../config';
 import { convertZodToJsonSchema, logger } from '../utils';
 import { errorHandling } from './error-handlling';
 import { SSETransportHandler, StdioTransportHandler } from './transports';
@@ -50,11 +51,13 @@ export class Server {
 
   private setupRequestHandlers() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
-      const tools = this.tools.map(tool => ({
-        name: tool.name,
-        description: tool.description,
-        inputSchema: convertZodToJsonSchema(tool.schema),
-      }));
+      const tools = this.tools
+        .filter(tool => !tool.isWriteOperation || config.allowWriteOperations)
+        .map(tool => ({
+          name: tool.name,
+          description: tool.description,
+          inputSchema: convertZodToJsonSchema(tool.schema),
+        }));
 
       return {
         tools,

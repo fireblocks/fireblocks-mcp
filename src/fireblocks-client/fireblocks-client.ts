@@ -21,6 +21,11 @@ import {
   TransactionRequest,
   VaultAccount,
   VaultAsset,
+  GetExternalWalletsResponse,
+  GetInternalWalletsResponse,
+  GetUsersResponse,
+  UnmanagedWallet,
+  UserResponse,
 } from '@fireblocks/ts-sdk';
 import { config } from '../config';
 
@@ -131,6 +136,24 @@ export class FireblocksClient {
 
     return asset.data;
   }
+
+  async getExternalWallets(): Promise<GetExternalWalletsResponse> {
+    const externalWallets = await this._fireblocks.externalWallets.getExternalWallets();
+
+    return externalWallets.data;
+  }
+
+  async getInternalWallets(): Promise<GetInternalWalletsResponse> {
+    const internalWallets = await this._fireblocks.internalWallets.getInternalWallets();
+
+    return internalWallets.data;
+  }
+
+  async getUsers(): Promise<GetUsersResponse> {
+    const users = await this._fireblocks.users.getUsers();
+
+    return users.data;
+  }
 }
 const fireblocksClient = new FireblocksClient();
 
@@ -157,4 +180,9 @@ export type {
   TransactionRequest,
   VaultAccount,
   VaultAsset,
+  GetExternalWalletsResponse,
+  GetInternalWalletsResponse,
+  GetUsersResponse,
+  UnmanagedWallet,
+  UserResponse,
 };

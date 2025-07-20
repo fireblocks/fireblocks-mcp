@@ -4,6 +4,7 @@ import { getExchangeAccountsTool } from './exchanges';
 import { getNetworkConnectionsTool } from './network';
 import { getActivePolicyTool } from './policy';
 import { createTransactionTool, getTransactionsTool } from './transactions';
+import { getUsersTool } from './users';
 import {
   getVaultAccountAssetTool,
   getVaultAccountByIdTool,
@@ -11,6 +12,7 @@ import {
   getVaultAssetsTool,
   getVaultBalanceByAssetTool,
 } from './vaults';
+import { getExternalWalletsTool, getInternalWalletsTool } from './wallets';
 import { getWhitelistIpAddressTool } from './whitelist';
 
 const tools: Tool[] = [
@@ -28,6 +30,9 @@ const tools: Tool[] = [
   getBlockchainAssetTool,
   getAssetsTool,
   getWhitelistIpAddressTool,
+  getExternalWalletsTool,
+  getInternalWalletsTool,
+  getUsersTool,
 ];
 
 export { tools };

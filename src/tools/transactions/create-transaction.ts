@@ -111,6 +111,7 @@ export const createTransactionTool: Tool<CreateTransactionArgs> = {
   name: 'create_transaction',
   description: 'Create a new Fireblocks transaction',
   schema,
+  isWriteOperation: true,
   handler: async (args: CreateTransactionArgs) => {
     const transaction = await fireblocksClient.createTransaction(args as TransactionRequest);
 
