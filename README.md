@@ -28,7 +28,7 @@ This MCP server provides secure access to Fireblocks functionality, allowing AI 
 
 ### Running with MCP Clients
 
-The Fireblocks MCP server can be integrated with various MCP-compatible clients. Here are configuration example for popular clients:
+The Fireblocks MCP server can be integrated with various MCP-compatible clients. Here are configuration examples for popular clients:
 
 #### Using the Published NPM Package
 
@@ -121,10 +121,6 @@ FIREBLOCKS_API_BASE_URL=https://api.fireblocks.io/v1
 # Optional: Enable write operations such as creating transactions (default: false)
 ENABLE_WRITE_OPERATIONS=true
 ```
-
-**⚠️ Security Warning**: Write operations allow AI assistants to create transactions and modify data in your Fireblocks workspace. Only enable this in trusted environments and ensure proper access controls are in place.
-
-When write operations are disabled, tools like `create_transaction` will not be available to the AI assistant.
 
 ### Private Key Setup
 
@@ -227,15 +223,11 @@ Retrieve exchange accounts with pagination.
 - `before` (optional): Pagination cursor for previous results
 - `after` (optional): Pagination cursor for next results
 
-### Network & Policy
+### Network
 
 #### `get_network_connections`
 
 Retrieve network connection information.
-
-#### `get_active_policy`
-
-Get the currently active policy configuration.
 
 ### Blockchain Information
 
@@ -288,11 +280,75 @@ List all users for the workspace with optional filtering (requires Admin permiss
 - `email` (optional): Filter users by specific email address (case-insensitive)
 - `query` (optional): Search users by name or email (case-insensitive partial matching)
 
-### Security
+### Security & Governance
+
+#### `get_active_policy`
+
+Get the currently active policy configuration.# Fireblocks MCP Server
+
+[![CI](https://github.com/fireblocks/fireblocks-mcp/actions/workflows/release.yml/badge.svg)](https://github.com/fireblocks/fireblocks-mcp/actions/workflows/release.yml)
+[![Coverage](https://codecov.io/gh/fireblocks/fireblocks-mcp/branch/main/graph/badge.svg)](https://codecov.io/gh/fireblocks/fireblocks-mcp)
+[![NPM Version](https://badge.fury.io/js/%40fireblocks%2Fmcp-server.svg)](https://badge.fury.io/js/%40fireblocks%2Fmcp-server)
+
+A Model Context Protocol (MCP) server implementation for the Fireblocks API, enabling AI assistants to interact with Fireblocks services through a standardized protocol.
+
 
 #### `get_whitelist_ip_addresses`
 
 Retrieve whitelisted IP addresses.
+
+## Security
+
+The use of an AI assistant to interact with your Fireblocks workspace presents inherent risks. Since AI models may produce unintended results, it is imperative to implement a robust security strategy to safeguard your assets. The following practices are highly recommended:
+
+### Default Safe Configuration
+
+⚠️ **Security Warning**: Write operations, such as creating transactions and modifying data in your Fireblocks workspace, are enabled by an AI assistant. For enhanced security, these operations (e.g., `create_transaction`) are disabled by default. They can be enabled by explicitly setting the `ENABLE_WRITE_OPERATIONS` environment variable to `true`. This should only be done in trusted environments with appropriate access controls.
+
+### Principle of Least Privilege
+
+When configuring an API user for the MCP server, it is essential to grant only the minimum permissions necessary for its intended function. For read-only tasks, a "Viewer" role, which is restricted to viewing transaction history, is the most secure option.
+
+For a detailed guide on user roles, please refer to the [the best practices for choosing user roles](https://support.fireblocks.io/hc/en-us/articles/5254222799900-Best-practices-for-choosing-user-roles).
+
+Instructions for creating a new API user can be found in the [Fireblocks guide on creating an API key](https://support.fireblocks.io/hc/en-us/articles/4407823826194-Adding-new-API-Users).
+
+### Human in the Loop
+
+We strongly advise utilizing the Fireblocks Policy Engine to ensure human oversight in the transaction approval process. A policy can be configured to require a manual designated signer to approve any transaction initiated by the AI assistant. More information can be found [here](https://support.fireblocks.io/hc/en-us/articles/7365877039004-Rule-parameters).
+
+### Secure API Credentials
+
+Your Fireblocks API Key and Private Key are highly sensitive credentials. Adherence to these best practices is mandatory:
+
+- API credentials must never be shared publicly.
+- The private key should be stored securely, preferably as a file with restricted access, as specified in the Configuration section.
+
+## Prompt Examples
+
+Here are some example prompts you can use with the Fireblocks MCP server:
+
+```
+Show me all my vault accounts and their balances
+```
+
+```
+Get the last 10 transactions from today
+```
+
+```
+What is my total Bitcoin balance across all accounts?
+```
+
+```
+Top up my Bitstamp account to have 1000 USDC or USDT
+```
+
+```
+Why did the policy block my last transaction?
+```
+
+**Note:** Transaction creation and top-up examples require `ENABLE_WRITE_OPERATIONS=true` and appropriate permissions.
 
 ## Development
 
