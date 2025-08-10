@@ -6,11 +6,11 @@ import {
   TextContent,
 } from '@modelcontextprotocol/sdk/types.js';
 import { fireblocksClient } from '../fireblocks-client';
-import { Tool } from '../types';
+import { Tool, TransportType } from '../types';
 import { config } from '../config';
 import { convertZodToJsonSchema, logger } from '../utils';
 import { errorHandling } from './error-handlling';
-import { SSETransportHandler, StdioTransportHandler } from './transports';
+import { StdioTransportHandler, StreamableHTTPTransportHandler } from './transports';
 
 import packageJson from '../../package.json';
 
@@ -110,14 +110,14 @@ export class Server {
     }
   }
 
-  public async run(useSse: boolean = false) {
+  public async run(transportType?: TransportType) {
     this.setupErrorHandling();
     this.setupRequestHandlers();
 
     try {
-      if (useSse) {
-        const sseHandler = new SSETransportHandler(this.server, this.tools, this.name);
-        await sseHandler.start();
+      if (transportType === 'http') {
+        const httpHandler = new StreamableHTTPTransportHandler(this.server, this.tools, this.name);
+        await httpHandler.start();
       } else {
         const stdioHandler = new StdioTransportHandler(this.server, this.name);
         await stdioHandler.start();

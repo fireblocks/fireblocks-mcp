@@ -17,7 +17,7 @@ export interface Config {
  */
 function getSecretKey(): string {
   const privateKeyPath = process.env.FIREBLOCKS_PRIVATE_KEY_PATH;
-  const privateKeyEnv = process.env.FIREBLOCKS_PRIVATE_KEY;
+  const privateKeyEnvName = process.env.FIREBLOCKS_PRIVATE_KEY_ENV_NAME;
 
   let secretKey = '';
 
@@ -27,10 +27,16 @@ function getSecretKey(): string {
     } catch (error) {
       throw new Error(`Failed to read private key from file: ${privateKeyPath}. Error: ${error}`);
     }
-  } else if (privateKeyEnv) {
-    secretKey = privateKeyEnv;
+  } else if (privateKeyEnvName && process.env[privateKeyEnvName]) {
+    secretKey = process.env[privateKeyEnvName];
+  } else if (privateKeyEnvName) {
+    throw new Error(
+      `FIREBLOCKS_PRIVATE_KEY_ENV_NAME environment variable is set to ${privateKeyEnvName} but this environment variable is empty`,
+    );
   } else {
-    throw new Error('Either FIREBLOCKS_PRIVATE_KEY_PATH or FIREBLOCKS_PRIVATE_KEY must be set');
+    throw new Error(
+      'Either FIREBLOCKS_PRIVATE_KEY_PATH or FIREBLOCKS_PRIVATE_KEY_ENV_NAME must be set',
+    );
   }
 
   // Process newlines in the private key

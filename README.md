@@ -1,7 +1,6 @@
 # Fireblocks MCP Server
 
 [![CI](https://github.com/fireblocks/fireblocks-mcp/actions/workflows/release.yml/badge.svg)](https://github.com/fireblocks/fireblocks-mcp/actions/workflows/release.yml)
-[![Coverage](https://codecov.io/gh/fireblocks/fireblocks-mcp/branch/main/graph/badge.svg)](https://codecov.io/gh/fireblocks/fireblocks-mcp)
 [![NPM Version](https://badge.fury.io/js/%40fireblocks%2Fmcp-server.svg)](https://badge.fury.io/js/%40fireblocks%2Fmcp-server)
 
 A Model Context Protocol (MCP) server implementation for the Fireblocks API, enabling AI assistants to interact with Fireblocks services through a standardized protocol.
@@ -20,9 +19,8 @@ This MCP server provides secure access to Fireblocks functionality, allowing AI 
 
 ## Prerequisites
 
-- Node.js >= 18.0.0
-- npm or yarn
-- Fireblocks API credentials (API Key and Private Key)
+- Node.js >= 18.0.0 OR Docker installed
+- Fireblocks API credentials (API Key and Private Key) - see [Adding new API Users](https://support.fireblocks.io/hc/en-us/articles/4407823826194-Adding-new-API-Users)
 
 ## Usage
 
@@ -32,6 +30,7 @@ The Fireblocks MCP server can be integrated with various MCP-compatible clients.
 
 #### Using the Published NPM Package
 
+**Option 1: Using private key file path**
 ```json
 {
   "mcpServers": {
@@ -47,6 +46,24 @@ The Fireblocks MCP server can be integrated with various MCP-compatible clients.
   }
 }
 ```
+
+**Option 2: Using environment variable reference**
+```json
+{
+  "mcpServers": {
+    "fireblocks": {
+      "command": "npx",
+      "args": ["-y", "@fireblocks/mcp-server"],
+      "env": {
+        "FIREBLOCKS_API_KEY": "your-api-key",
+        "FIREBLOCKS_PRIVATE_KEY_ENV_NAME": "FB_PRIVATE_KEY",
+        "ENABLE_WRITE_OPERATIONS": "false"
+      }
+    }
+  }
+}
+```
+Then set `FB_PRIVATE_KEY` environment variable separately (not in the MCP config file).
 
 #### Using Docker
 
@@ -112,22 +129,71 @@ FIREBLOCKS_API_KEY=your-api-key-here
 # Method 1: Path to private key file
 FIREBLOCKS_PRIVATE_KEY_PATH=/path/to/your/private-key.pem
 
-# Method 2: Private key content directly (escape newlines as \n)
-FIREBLOCKS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nXYZ..."
+# Method 2: Reference to another environment variable containing the private key
+FIREBLOCKS_PRIVATE_KEY_ENV_NAME=MY_PRIVATE_KEY_VAR
 
 # Required: API Base URL
 FIREBLOCKS_API_BASE_URL=https://api.fireblocks.io/v1
 
 # Optional: Enable write operations such as creating transactions (default: false)
 ENABLE_WRITE_OPERATIONS=true
+
+# Optional: Transport type - stdio (default) or http
+MCP_TRANSPORT_TYPE=stdio
+
+# Optional: HTTP transport specific settings (only when MCP_TRANSPORT_TYPE=http)
+PORT=3000
+HOST=127.0.0.1
+CORS_ORIGIN=
 ```
+
+### Transport Configuration
+
+The Fireblocks MCP server supports two transport modes:
+
+#### STDIO Transport (Default)
+```bash
+# Default transport - secure local-only communication
+MCP_TRANSPORT_TYPE=stdio
+```
+
+Use STDIO transport when:
+- Integrating with MCP clients like Claude Desktop
+- Running locally for development
+- Maximum security (no network exposure)
+
+#### Streamable HTTP Transport
+```bash
+# Streamable HTTP transport - for web integrations and API access
+MCP_TRANSPORT_TYPE=http
+PORT=3000
+HOST=127.0.0.1
+
+# Replace with your client's origin
+CORS_ORIGIN=https://yourdomain.com
+```
+
+**Security Note**: HTTP transport binds to localhost (`127.0.0.1`) by default for security. Configure `CORS_ORIGIN` carefully in production environments.
 
 ### Private Key Setup
 
 You can provide your Fireblocks private key in two ways:
 
 1. **File path** (recommended for security): Set `FIREBLOCKS_PRIVATE_KEY_PATH` to the path of your private key file
-2. **Environment variable**: Set `FIREBLOCKS_PRIVATE_KEY` with the private key content (use `\n` for line breaks)
+2. **Environment variable reference** : Set `FIREBLOCKS_PRIVATE_KEY_ENV_NAME` to the name of another environment variable that contains your private key
+
+**Method 2 is specifically designed to avoid hardcoding private keys in MCP configuration files (like `mcp.json`) for security reasons.**
+
+Example for method 2:
+```bash
+# Set the reference to your private key environment variable
+FIREBLOCKS_PRIVATE_KEY_ENV_NAME=MY_SECRET_KEY
+
+# Then set the actual private key in that variable (outside of mcp.json)
+MY_SECRET_KEY="-----BEGIN PRIVATE KEY-----\nXYZ..."
+```
+
+This way, your `mcp.json` only contains the environment variable name reference, not the actual private key content.
 
 ## Available Tools
 
@@ -284,14 +350,7 @@ List all users for the workspace with optional filtering (requires Admin permiss
 
 #### `get_active_policy`
 
-Get the currently active policy configuration.# Fireblocks MCP Server
-
-[![CI](https://github.com/fireblocks/fireblocks-mcp/actions/workflows/release.yml/badge.svg)](https://github.com/fireblocks/fireblocks-mcp/actions/workflows/release.yml)
-[![Coverage](https://codecov.io/gh/fireblocks/fireblocks-mcp/branch/main/graph/badge.svg)](https://codecov.io/gh/fireblocks/fireblocks-mcp)
-[![NPM Version](https://badge.fury.io/js/%40fireblocks%2Fmcp-server.svg)](https://badge.fury.io/js/%40fireblocks%2Fmcp-server)
-
-A Model Context Protocol (MCP) server implementation for the Fireblocks API, enabling AI assistants to interact with Fireblocks services through a standardized protocol.
-
+Get the currently active policy configuration.
 
 #### `get_whitelist_ip_addresses`
 

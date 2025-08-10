@@ -26,7 +26,7 @@ const schema = z
       .number()
       .int()
       .min(1)
-      .max(200)
+      .max(100)
       .default(50)
       .optional()
       .describe(

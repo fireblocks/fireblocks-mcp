@@ -21,8 +21,8 @@ function isLogLevelEnabled(level: LogLevel): boolean {
 function log(
   level: LogLevel,
   message: string,
-  error?: Error | unknown,
   metadata?: Record<string, unknown>,
+  error?: Error | unknown,
 ) {
   if (!isLogLevelEnabled(level)) return;
 
@@ -53,9 +53,9 @@ export const logger: Logger = {
     log(LogLevel.INFO, message, metadata);
   },
   warn: (message: string, error?: Error | unknown, metadata?: Record<string, unknown>) => {
-    log(LogLevel.WARN, message, error, metadata);
+    log(LogLevel.WARN, message, metadata, error);
   },
   error: (message: string, error: Error | unknown, metadata?: Record<string, unknown>) => {
-    log(LogLevel.ERROR, message, error, metadata);
+    log(LogLevel.ERROR, message, metadata, error);
   },
 };

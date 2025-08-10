@@ -18,7 +18,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprot
 import { z } from 'zod';
 import { Tool } from '../types';
 import { Server } from './server';
-import { SSETransportHandler, StdioTransportHandler } from './transports';
+import { StdioTransportHandler, StreamableHTTPTransportHandler } from './transports';
 
 // Mock the fireblocks client to avoid config loading
 jest.mock('../fireblocks-client', () => ({
@@ -29,7 +29,7 @@ jest.mock('../fireblocks-client', () => ({
 
 // Mock the transports
 jest.mock('./transports', () => ({
-  SSETransportHandler: jest.fn().mockImplementation(() => ({
+  StreamableHTTPTransportHandler: jest.fn().mockImplementation(() => ({
     start: jest.fn(),
   })),
   StdioTransportHandler: jest.fn().mockImplementation(() => ({
@@ -47,8 +47,8 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => ({
 }));
 
 const MockedMCPServer = MCPServer as jest.MockedClass<typeof MCPServer>;
-const MockedSSETransportHandler = SSETransportHandler as jest.MockedClass<
-  typeof SSETransportHandler
+const MockedStreamableHTTPTransportHandler = StreamableHTTPTransportHandler as jest.MockedClass<
+  typeof StreamableHTTPTransportHandler
 >;
 const MockedStdioTransportHandler = StdioTransportHandler as jest.MockedClass<
   typeof StdioTransportHandler
@@ -149,13 +149,13 @@ describe('Server', () => {
       });
 
       // Trigger setup by calling run (but we'll mock transports)
-      const mockSSEHandler = { start: jest.fn() };
-      MockedSSETransportHandler.mockReturnValue(mockSSEHandler as any);
+      const mockHTTPHandler = { start: jest.fn() };
+      MockedStreamableHTTPTransportHandler.mockReturnValue(mockHTTPHandler as any);
     });
 
     describe('ListTools handler', () => {
       it('should return empty tools list when no tools registered', async () => {
-        await server.run(true);
+        await server.run();
 
         const result = await listToolsHandler();
 
@@ -176,7 +176,7 @@ describe('Server', () => {
         };
 
         server.registerTools([mockTool]);
-        await server.run(true);
+        await server.run();
 
         const result = await listToolsHandler();
 
@@ -209,7 +209,7 @@ describe('Server', () => {
         const mockResult = { success: true, data: 'test result' };
         (mockTool.handler as jest.Mock).mockResolvedValue(mockResult);
 
-        await server.run(true);
+        await server.run();
 
         const request = {
           params: {
@@ -235,7 +235,7 @@ describe('Server', () => {
         const mockResult = 'Simple string result';
         (mockTool.handler as jest.Mock).mockResolvedValue(mockResult);
 
-        await server.run(true);
+        await server.run();
 
         const request = {
           params: {
@@ -257,7 +257,7 @@ describe('Server', () => {
       });
 
       it('should throw error when tool not found', async () => {
-        await server.run(true);
+        await server.run();
 
         const request = {
           params: {
@@ -270,7 +270,7 @@ describe('Server', () => {
       });
 
       it('should handle schema validation errors', async () => {
-        await server.run(true);
+        await server.run();
 
         const request = {
           params: {
@@ -289,7 +289,7 @@ describe('Server', () => {
         const error = new Error('Tool execution failed');
         (mockTool.handler as jest.Mock).mockRejectedValue(error);
 
-        await server.run(true);
+        await server.run();
 
         const request = {
           params: {
@@ -307,33 +307,6 @@ describe('Server', () => {
   });
 
   describe('run method', () => {
-    it('should start SSE transport when useSse is true', async () => {
-      const mockSSEHandler = { start: jest.fn() };
-      MockedSSETransportHandler.mockReturnValue(mockSSEHandler as any);
-
-      await server.run(true);
-
-      expect(MockedSSETransportHandler).toHaveBeenCalledWith(
-        mockMCPServer,
-        [],
-        'Fireblocks MCP Server',
-      );
-      expect(mockSSEHandler.start).toHaveBeenCalled();
-    });
-
-    it('should start stdio transport when useSse is false', async () => {
-      const mockStdioHandler = { start: jest.fn() };
-      MockedStdioTransportHandler.mockReturnValue(mockStdioHandler as any);
-
-      await server.run(false);
-
-      expect(MockedStdioTransportHandler).toHaveBeenCalledWith(
-        mockMCPServer,
-        'Fireblocks MCP Server',
-      );
-      expect(mockStdioHandler.start).toHaveBeenCalled();
-    });
-
     it('should default to stdio transport when no parameter provided', async () => {
       const mockStdioHandler = { start: jest.fn() };
       MockedStdioTransportHandler.mockReturnValue(mockStdioHandler as any);
@@ -345,20 +318,20 @@ describe('Server', () => {
     });
 
     it('should call transport start method', async () => {
-      const mockSSEHandler = { start: jest.fn() };
-      MockedSSETransportHandler.mockReturnValue(mockSSEHandler as any);
+      const mockHTTPHandler = { start: jest.fn() };
+      MockedStreamableHTTPTransportHandler.mockReturnValue(mockHTTPHandler as any);
 
-      await server.run(true);
+      await server.run('http');
 
-      // Verify that the SSE handler start method was called
-      expect(mockSSEHandler.start).toHaveBeenCalled();
+      // Verify that the HTTP handler start method was called
+      expect(mockHTTPHandler.start).toHaveBeenCalled();
     });
 
     it('should setup error handling and request handlers', async () => {
-      const mockSSEHandler = { start: jest.fn() };
-      MockedSSETransportHandler.mockReturnValue(mockSSEHandler as any);
+      const mockHTTPHandler = { start: jest.fn() };
+      MockedStreamableHTTPTransportHandler.mockReturnValue(mockHTTPHandler as any);
 
-      await server.run(true);
+      await server.run('http');
 
       expect(mockMCPServer.setRequestHandler).toHaveBeenCalledTimes(2);
       expect(mockMCPServer.onerror).toBeDefined();
@@ -367,19 +340,19 @@ describe('Server', () => {
 
   describe('error handling', () => {
     it('should set up error handler on MCP server', async () => {
-      const mockSSEHandler = { start: jest.fn() };
-      MockedSSETransportHandler.mockReturnValue(mockSSEHandler as any);
+      const mockHTTPHandler = { start: jest.fn() };
+      MockedStreamableHTTPTransportHandler.mockReturnValue(mockHTTPHandler as any);
 
-      await server.run(true);
+      await server.run('http');
 
       expect(mockMCPServer.onerror).toBeInstanceOf(Function);
     });
 
     it('should handle SIGINT signal setup', async () => {
-      const mockSSEHandler = { start: jest.fn() };
-      MockedSSETransportHandler.mockReturnValue(mockSSEHandler as any);
+      const mockHTTPHandler = { start: jest.fn() };
+      MockedStreamableHTTPTransportHandler.mockReturnValue(mockHTTPHandler as any);
 
-      await server.run(true);
+      await server.run('http');
 
       // Verify that SIGINT handlers are set up
       // Note: We can't easily test the actual signal handling without complex process mocking
