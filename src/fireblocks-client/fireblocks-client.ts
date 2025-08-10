@@ -28,12 +28,18 @@ import {
   UserResponse,
 } from '@fireblocks/ts-sdk';
 import { config } from '../config';
+import packageJson from '../../package.json';
 
 export class FireblocksClient {
   private readonly _fireblocks: Fireblocks;
 
   constructor() {
-    this._fireblocks = new Fireblocks(config.fireblocks);
+    this._fireblocks = new Fireblocks({
+      ...config.fireblocks,
+      additionalOptions: {
+        userAgent: `${packageJson.name}/${packageJson.version}`,
+      },
+    });
   }
 
   async testConnection() {

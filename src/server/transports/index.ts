@@ -1,2 +1,2 @@
-export { SSETransportHandler } from './sse-transport';
 export { StdioTransportHandler } from './stdio-transport';
+export { StreamableHTTPTransportHandler } from './streamable-http-transport';

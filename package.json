@@ -47,8 +47,9 @@
   },
   "homepage": "https://github.com/fireblocks/fireblocks-mcp#readme",
   "dependencies": {
-    "@fireblocks/ts-sdk": "^10.4.0",
-    "@modelcontextprotocol/sdk": "^1.13.2",
+    "@fireblocks/ts-sdk": "^11.0.0",
+    "@modelcontextprotocol/sdk": "^1.17.2",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "zod": "^3.25.67",
     "zod-to-json-schema": "^3.24.6"
