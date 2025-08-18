@@ -38,6 +38,7 @@ The Fireblocks MCP server can be integrated with various MCP-compatible clients.
       "command": "npx",
       "args": ["-y", "@fireblocks/mcp-server"],
       "env": {
+        "FIREBLOCKS_API_BASE_URL": "https://api.fireblocks.io/v1",
         "FIREBLOCKS_API_KEY": "your-api-key",
         "FIREBLOCKS_PRIVATE_KEY_PATH": "/path/to/private-key.pem",
         "ENABLE_WRITE_OPERATIONS": "false"
@@ -55,6 +56,7 @@ The Fireblocks MCP server can be integrated with various MCP-compatible clients.
       "command": "npx",
       "args": ["-y", "@fireblocks/mcp-server"],
       "env": {
+        "FIREBLOCKS_API_BASE_URL": "https://api.fireblocks.io/v1",
         "FIREBLOCKS_API_KEY": "your-api-key",
         "FIREBLOCKS_PRIVATE_KEY_ENV_NAME": "FB_PRIVATE_KEY",
         "ENABLE_WRITE_OPERATIONS": "false"
@@ -77,6 +79,8 @@ Then set `FB_PRIVATE_KEY` environment variable separately (not in the MCP config
         "--rm",
         "-i",
         "--env",
+        "FIREBLOCKS_API_BASE_URL=https://api.fireblocks.io/v1",
+        "--env",
         "FIREBLOCKS_API_KEY=your-api-key",
         "--env",
         "FIREBLOCKS_PRIVATE_KEY_PATH=/keys/private-key.pem",
@@ -93,6 +97,7 @@ Alternatively, you can run Docker directly:
 
 ```bash
 docker run --rm -i \
+  --env FIREBLOCKS_API_BASE_URL=https://api.fireblocks.io/v1 \
   --env FIREBLOCKS_API_KEY=your-api-key \
   --env FIREBLOCKS_PRIVATE_KEY_PATH=/keys/private-key.pem \
   -v /path/to/your/private-key.pem:/keys/private-key.pem:ro \
