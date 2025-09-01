@@ -22,16 +22,26 @@ This MCP server provides secure access to Fireblocks functionality, allowing AI 
 
 - Node.js >= 18.0.0
 - npm or yarn
-- Fireblocks API credentials (API Key and Private Key)
 
-## Usage
+## Installation
 
-### Running with MCP Clients
+### Step 1: Create an API key
 
-The Fireblocks MCP server can be integrated with various MCP-compatible clients. Here are configuration examples for popular clients:
+To get started, you'll need a **Fireblocks API Key** and its corresponding **secret key file**.
 
-#### Using the Published NPM Package
+1. Follow the [Fireblocks guide on creating an API key](https://support.fireblocks.io/hc/en-us/articles/4407823826194-Adding-new-API-Users).
 
+🔒 *Security Note: When configuring an API user for the MCP server, it is critical to grant only the minimum permissions required for its specific tasks. For example, for read-only tasks like viewing transaction history, the "Viewer" role is the most secure option. For a detailed guide on user roles, please refer to the [best practices for choosing user roles](https://support.fireblocks.io/hc/en-us/articles/5254222799900-Best-practices-for-choosing-user-roles)*.
+
+2. Once created, securely store both the API Key and the secret key file (e.g., `fireblocks-secret.key`). You will need both for the next steps.
+
+### Step 2: Configure your MCP Client
+
+#### For Claude Desktop
+
+1. Open **Claude Desktop**.
+2. Go to **Settings → Developer → Edit Config** to open the `claude_desktop_config.json` file.
+3. Add a new server with this configuration:
 ```json
 {
   "mcpServers": {
@@ -40,7 +50,7 @@ The Fireblocks MCP server can be integrated with various MCP-compatible clients.
       "args": ["-y", "@fireblocks/mcp-server"],
       "env": {
         "FIREBLOCKS_API_KEY": "your-api-key",
-        "FIREBLOCKS_PRIVATE_KEY_PATH": "/path/to/private-key.pem",
+        "FIREBLOCKS_PRIVATE_KEY_PATH": "your-fireblocks-api-secret-key-filepath",
         "ENABLE_WRITE_OPERATIONS": "false"
       }
     }
@@ -48,86 +58,31 @@ The Fireblocks MCP server can be integrated with various MCP-compatible clients.
 }
 ```
 
-#### Using Docker
+#### For Cursor
 
+1. Open **Cursor**.
+2. Go to **Settings → Cursor Settings → Tools & Integrations**.
+3. Select **MCP Tools** and click **Add Custom MCP** to open the `mcp.json` file.
+4. Add a new server with this configuration:
 ```json
 {
   "mcpServers": {
     "fireblocks": {
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-i",
-        "--env",
-        "FIREBLOCKS_API_KEY=your-api-key",
-        "--env",
-        "FIREBLOCKS_PRIVATE_KEY_PATH=/keys/private-key.pem",
-        "-v",
-        "/path/to/your/private-key.pem:/keys/private-key.pem:ro",
-        "fireblocksofficial/mcp-server"
-      ]
+      "command": "npx",
+      "args": ["-y", "@fireblocks/mcp-server"],
+      "env": {
+        "FIREBLOCKS_API_KEY": "your-api-key",
+        "FIREBLOCKS_PRIVATE_KEY_PATH": "your-api-secret-key-filepath",
+        "ENABLE_WRITE_OPERATIONS": "false"
+      }
     }
   }
 }
 ```
 
-Alternatively, you can run Docker directly:
-
-```bash
-docker run --rm -i \
-  --env FIREBLOCKS_API_KEY=your-api-key \
-  --env FIREBLOCKS_PRIVATE_KEY_PATH=/keys/private-key.pem \
-  -v /path/to/your/private-key.pem:/keys/private-key.pem:ro \
-  fireblocksofficial/mcp-server
-```
-
-Or use an environment file:
-
-```bash
-docker run --rm -i \
-  --env-file .env \
-  -v /path/to/your/private-key.pem:/keys/private-key.pem:ro \
-  fireblocksofficial/mcp-server
-```
-
-#### For local global installation:
-
-```bash
-npm install -g @fireblocks/mcp-server
-fireblocks-mcp
-```
-
-## Configuration
-
-The MCP server requires Fireblocks API credentials to be configured via environment variables.
-
-### Environment Variables
-
-```bash
-# Required: Fireblocks API Key
-FIREBLOCKS_API_KEY=your-api-key-here
-
-# Required: Private Key (choose one method)
-# Method 1: Path to private key file
-FIREBLOCKS_PRIVATE_KEY_PATH=/path/to/your/private-key.pem
-
-# Method 2: Private key content directly (escape newlines as \n)
-FIREBLOCKS_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nXYZ..."
-
-# Required: API Base URL
-FIREBLOCKS_API_BASE_URL=https://api.fireblocks.io/v1
-
-# Optional: Enable write operations such as creating transactions (default: false)
-ENABLE_WRITE_OPERATIONS=true
-```
-
-### Private Key Setup
-
-You can provide your Fireblocks private key in two ways:
-
-1. **File path** (recommended for security): Set `FIREBLOCKS_PRIVATE_KEY_PATH` to the path of your private key file
-2. **Environment variable**: Set `FIREBLOCKS_PRIVATE_KEY` with the private key content (use `\n` for line breaks)
+### Step 3: Customize MCP Server Settings (Optional)
+* To enable write operations, set the `ENABLE_WRITE_OPERATIONS` environment variable to `true`. Be sure to read the **Security Considerations** section before doing so.
+* If you need to use a **non-default Fireblocks environment** (e.g., Non-US, Sandbox), you must add the `FIREBLOCKS_API_BASE_URL` setting. Set its value to the base URL of the specific environment's API.
 
 ## Available Tools
 
@@ -268,6 +223,16 @@ Retrieve external wallets under the workspace.
 
 Retrieve internal wallets under the workspace.
 
+### Security & Governance
+
+#### `get_active_policy`
+
+Get the currently active policy configuration.
+
+#### `get_whitelist_ip_addresses`
+
+Retrieve whitelisted IP addresses.
+
 ### User Management
 
 #### `get_users`
@@ -280,49 +245,6 @@ List all users for the workspace with optional filtering (requires Admin permiss
 - `email` (optional): Filter users by specific email address (case-insensitive)
 - `query` (optional): Search users by name or email (case-insensitive partial matching)
 
-### Security & Governance
-
-#### `get_active_policy`
-
-Get the currently active policy configuration.# Fireblocks MCP Server
-
-[![CI](https://github.com/fireblocks/fireblocks-mcp/actions/workflows/release.yml/badge.svg)](https://github.com/fireblocks/fireblocks-mcp/actions/workflows/release.yml)
-[![Coverage](https://codecov.io/gh/fireblocks/fireblocks-mcp/branch/main/graph/badge.svg)](https://codecov.io/gh/fireblocks/fireblocks-mcp)
-[![NPM Version](https://badge.fury.io/js/%40fireblocks%2Fmcp-server.svg)](https://badge.fury.io/js/%40fireblocks%2Fmcp-server)
-
-A Model Context Protocol (MCP) server implementation for the Fireblocks API, enabling AI assistants to interact with Fireblocks services through a standardized protocol.
-
-
-#### `get_whitelist_ip_addresses`
-
-Retrieve whitelisted IP addresses.
-
-## Security
-
-The use of an AI assistant to interact with your Fireblocks workspace presents inherent risks. Since AI models may produce unintended results, it is imperative to implement a robust security strategy to safeguard your assets. The following practices are highly recommended:
-
-### Default Safe Configuration
-
-⚠️ **Security Warning**: Write operations, such as creating transactions and modifying data in your Fireblocks workspace, are enabled by an AI assistant. For enhanced security, these operations (e.g., `create_transaction`) are disabled by default. They can be enabled by explicitly setting the `ENABLE_WRITE_OPERATIONS` environment variable to `true`. This should only be done in trusted environments with appropriate access controls.
-
-### Principle of Least Privilege
-
-When configuring an API user for the MCP server, it is essential to grant only the minimum permissions necessary for its intended function. For read-only tasks, a "Viewer" role, which is restricted to viewing transaction history, is the most secure option.
-
-For a detailed guide on user roles, please refer to the [the best practices for choosing user roles](https://support.fireblocks.io/hc/en-us/articles/5254222799900-Best-practices-for-choosing-user-roles).
-
-Instructions for creating a new API user can be found in the [Fireblocks guide on creating an API key](https://support.fireblocks.io/hc/en-us/articles/4407823826194-Adding-new-API-Users).
-
-### Human in the Loop
-
-We strongly advise utilizing the Fireblocks Policy Engine to ensure human oversight in the transaction approval process. A policy can be configured to require a manual designated signer to approve any transaction initiated by the AI assistant. More information can be found [here](https://support.fireblocks.io/hc/en-us/articles/7365877039004-Rule-parameters).
-
-### Secure API Credentials
-
-Your Fireblocks API Key and Private Key are highly sensitive credentials. Adherence to these best practices is mandatory:
-
-- API credentials must never be shared publicly.
-- The private key should be stored securely, preferably as a file with restricted access, as specified in the Configuration section.
 
 ## Prompt Examples
 
@@ -350,7 +272,36 @@ Why did the policy block my last transaction?
 
 **Note:** Transaction creation and top-up examples require `ENABLE_WRITE_OPERATIONS=true` and appropriate permissions.
 
-## Development
+## Security Considerations
+
+The use of an AI assistant to interact with your Fireblocks workspace presents inherent risks. Since AI models may produce unintended results, it is imperative to implement a robust security strategy to safeguard your assets. The following practices are highly recommended:
+
+
+### Default Safe Configuration
+
+⚠️ **Security Warning**: Write operations, such as creating transactions and modifying data in your Fireblocks workspace, are enabled by an AI assistant. For enhanced security, these operations (e.g., `create_transaction`) are disabled by default. They can be enabled by explicitly setting the `ENABLE_WRITE_OPERATIONS` environment variable to `true`. This should only be done in trusted environments with appropriate access controls.
+
+### Principle of Least Privilege
+
+When configuring an API user for the MCP server, it is essential to grant only the minimum permissions necessary for its intended function. For read-only tasks, a "Viewer" role, which is restricted to viewing transaction history, is the most secure option.
+
+For a detailed guide on user roles, please refer to the [the best practices for choosing user roles](https://support.fireblocks.io/hc/en-us/articles/5254222799900-Best-practices-for-choosing-user-roles).
+
+Instructions for creating a new API user can be found in the [Fireblocks guide on creating an API key](https://support.fireblocks.io/hc/en-us/articles/4407823826194-Adding-new-API-Users).
+
+### Human in the Loop
+
+We strongly advise utilizing the Fireblocks Policy Engine to ensure human oversight in the transaction approval process. A policy can be configured to require a manual designated signer to approve any transaction initiated by the AI assistant. More information can be found [here](https://support.fireblocks.io/hc/en-us/articles/7365877039004-Rule-parameters).
+
+### Secure API Credentials
+
+Your Fireblocks API Key and Private Key are highly sensitive credentials. Adherence to these best practices is mandatory:
+
+- API credentials must never be shared publicly.
+- The private key should be stored securely, preferably as a file with restricted access, as specified in the Configuration section.
+
+
+## How to develop in the repo
 
 ### Getting Started
 
