@@ -1,3 +1,9 @@
+## 1.2.0 (2025-09-04)
+
+* feat: Configure CI for pull requests (#6) ([877a954](https://github.com/fireblocks/fireblocks-mcp/commit/877a954)), closes [#6](https://github.com/fireblocks/fireblocks-mcp/issues/6)
+* chore: Add FIREBLOCKS_API_BASE_URL environment variable to README examples (#3) ([fd13462](https://github.com/fireblocks/fireblocks-mcp/commit/fd13462)), closes [#3](https://github.com/fireblocks/fireblocks-mcp/issues/3)
+* chore: simplified setup instructions (#5) ([ca76922](https://github.com/fireblocks/fireblocks-mcp/commit/ca76922)), closes [#5](https://github.com/fireblocks/fireblocks-mcp/issues/5)
+
 ## 1.1.0 (2025-08-18)
 
 * feat: Add getVaultAssets and getAssets tools ([253d31d](https://github.com/fireblocks/fireblocks-mcp/commit/253d31d))

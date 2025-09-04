@@ -1,6 +1,6 @@
 {
   "name": "@fireblocks/mcp-server",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A Model Context Protocol (MCP) server implementation for Fireblocks API",
   "type": "commonjs",
   "bin": {
